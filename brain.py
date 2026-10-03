@@ -96,7 +96,8 @@ class Brain:
             )
 
         # 前额叶维持
-        self.prefrontal.maintain(self.workspace.spotlight)
+        self.prefrontal.decay_all(rate=0.05)
+self.prefrontal.maintain(self.workspace.spotlight)
 
         # 内驱力
         self.hypothalamus.update(self.stem.clock)
