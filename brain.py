@@ -101,6 +101,7 @@ class Brain:
         # ===== 三级处理：习惯 → 回忆 → 皮层 =====
         thought = None
         source = None
+        tick_tokens = 0
 
         # 1. 基底核习惯
         habit_action = self.basal_ganglia.try_habit(self.workspace)
@@ -122,6 +123,7 @@ class Brain:
                 thought = self.neocortex.reason(self.workspace.compile())
                 source = "cortex"
                 self._cortex_calls += 1
+                tick_tokens = thought.get("tokens", 0)
             else:
                 thought = {"thought": "（自动）维持现状", "action": "idle"}
                 source = "auto"
@@ -196,4 +198,8 @@ class Brain:
             "tick_count": self._tick_count,
             "promoted": promoted,
             "habit_count": len(self.basal_ganglia.habits),
+            "tick_tokens": tick_tokens,
+            "total_tokens": self.neocortex.total_tokens,
+            "provider": self.neocortex.provider.name,
+            "last_error": self.neocortex.last_error,
         }
