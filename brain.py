@@ -1,21 +1,21 @@
 import time
-from .state import Item, BrainState
-from .bus import WhiteMatter
-from .neuromod import Neuromodulators
-from .stem import Brainstem
-from .workspace import GlobalWorkspace
-from .regions.thalamus import Thalamus
-from .regions.neocortex import Neocortex
-from .regions.prefrontal import PrefrontalCortex
-from .regions.hippocampus import Hippocampus
-from .regions.entorhinal import EntorhinalCortex
-from .regions.amygdala import Amygdala
-from .regions.basal_ganglia import BasalGanglia
-from .regions.cerebellum import Cerebellum
-from .regions.hypothalamus import Hypothalamus
-from .regions.acc import AnteriorCingulate
-from .regions.insula import Insula
-from .regions.dmn import DefaultModeNetwork
+from state import Item, BrainState
+from bus import WhiteMatter
+from neuromod import Neuromodulators
+from stem import Brainstem
+from workspace import GlobalWorkspace
+from regions.thalamus import Thalamus
+from regions.neocortex import Neocortex
+from regions.prefrontal import PrefrontalCortex
+from regions.hippocampus import Hippocampus
+from regions.entorhinal import EntorhinalCortex
+from regions.amygdala import Amygdala
+from regions.basal_ganglia import BasalGanglia
+from regions.cerebellum import Cerebellum
+from regions.hypothalamus import Hypothalamus
+from regions.acc import AnteriorCingulate
+from regions.insula import Insula
+from regions.dmn import DefaultModeNetwork
 
 class Brain:
     def __init__(self, name="Mind", db_path="mind.db"):
