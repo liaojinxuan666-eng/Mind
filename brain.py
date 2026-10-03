@@ -17,6 +17,7 @@ from regions.acc import AnteriorCingulate
 from regions.insula import Insula
 from regions.dmn import DefaultModeNetwork
 
+
 class Brain:
     def __init__(self, name="Mind", db_path="mind.db"):
         self.name = name
@@ -55,12 +56,17 @@ class Brain:
         self.state.wakefulness = wakefulness
 
         # 丘脑门控
-        gated = self.thalamus.gate(self.sensory_queue, self.prefrontal.current_goal())
+        gated = self.thalamus.gate(
+            self.sensory_queue, self.prefrontal.current_goal()
+        )
         self.sensory_queue = []
 
         # 全局工作空间
-        self.workspace.bind(gated, list(self.prefrontal.working_memory),
-                            self.prefrontal.current_goal())
+        self.workspace.bind(
+            gated,
+            self.prefrontal.snapshot(),
+            self.prefrontal.current_goal(),
+        )
 
         # 皮层推理
         thought = self.neocortex.reason(self.workspace.compile())
@@ -76,7 +82,9 @@ class Brain:
         conflict = self.acc.monitor(candidates, abs(valence))
 
         # 动作选择
-        chosen = self.basal_ganglia.select(candidates, exploration=self.neuromod.dopamine)
+        chosen = self.basal_ganglia.select(
+            candidates, exploration=self.neuromod.dopamine
+        )
         action = chosen["action"] if chosen else "idle"
         result = self._execute(action)
 
@@ -85,19 +93,24 @@ class Brain:
         error = self.cerebellum.correct(actual)
 
         # 神经调质更新
-        self.neuromod.update(td_error=error, novelty=0.1, threat=max(0.0, -valence))
+        self.neuromod.update(
+            td_error=error, novelty=0.1, threat=max(0.0, -valence)
+        )
         self.state.neuromod = self.neuromod.broadcast()
 
         # 海马体编码
         if self.workspace.spotlight:
             self.hippocampus.encode(
-                self.workspace, action, result, valence,
+                self.workspace,
+                action,
+                result,
+                valence,
                 sum(i.salience for i in self.workspace.spotlight),
             )
 
-        # 前额叶维持
+        # 工作记忆：先衰减，再维持
         self.prefrontal.decay_all(rate=0.05)
-self.prefrontal.maintain(self.workspace.spotlight)
+        self.prefrontal.maintain(self.workspace.spotlight)
 
         # 内驱力
         self.hypothalamus.update(self.stem.clock)

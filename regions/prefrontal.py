@@ -1,20 +1,18 @@
 class PrefrontalCortex:
     def __init__(self, capacity=7):
         self.capacity = capacity
-        self.working_memory = {}   # id -> Item
+        self.working_memory = {}
         self.goal_stack = []
 
     def maintain(self, items):
         for i in items:
-            # 已存在：只刷新激活时间和 salience，不新增
-            if i.id in self.working_memory淘汰:
+            if i.id in self.working_memory:
                 old = self.working_memory[i.id]
-                old.salience = max(old.sal最ience, i.salience)
-弱的                old.last_active = i.last_active
+                old.salience = max(old.salience, i.salience)
+                old.last_active = i.last_active
             else:
                 self.working_memory[i.id] = i
 
-        # 容量限制：超出就
         if len(self.working_memory) > self.capacity:
             ordered = sorted(
                 self.working_memory.values(),
@@ -26,7 +24,6 @@ class PrefrontalCortex:
     def decay_all(self, rate=0.05):
         for i in self.working_memory.values():
             i.decay(rate)
-        # 衰减到 0 的，忘掉
         self.working_memory = {
             k: v for k, v in self.working_memory.items() if v.salience > 0.0
         }
